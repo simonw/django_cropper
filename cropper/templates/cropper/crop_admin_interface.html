@@ -1,0 +1,61 @@
+{% extends "admin/change_form.html" %}
+
+{% block extrahead %}
+{{ block.super }}
+<script type="text/javascript" src="/static/cropper-assets/jquery.min.js">
+</script>
+<script type="text/javascript" src="/static/cropper-assets/jquery.Jcrop.js">
+</script>
+<script type="text/javascript">
+
+jQuery(window).load(function() {
+	var real_width = {{ image_to_crop.width }};
+	var real_height = {{ image_to_crop.height }};
+	
+	var resized_width = $('img').width();
+	var resized_height = $('img').height();
+	
+	var width_ratio = real_width / resized_width;
+	var height_ratio = real_height / resized_height;
+	
+	function update(c) {
+		$('#id_x').val(Math.floor(c.x * width_ratio));
+		$('#id_y').val(Math.floor(c.y * height_ratio));
+		$('#id_w').val(Math.floor(c.w * width_ratio));
+		$('#id_h').val(Math.floor(c.h * height_ratio));
+	}
+	
+	var args = {
+		onSelect: update,
+		onChange: update
+	}
+	{% if original.size %}
+	args.aspectRatio = {{ original.size.width }} / {{ original.size.height }};
+	{% endif %}
+	
+	$('#crop img').Jcrop(args);
+});
+
+</script>
+<style type="text/css">
+#crop img {
+	width: 80%;
+}
+</style>
+<link rel="stylesheet" 
+	href="/static/cropper-assets/jquery.Jcrop.css" type="text/css">
+{% endblock %}
+
+{% block content %}
+{% if image_to_crop %}
+
+{% if original.image %}
+<p><a href="{{ original.image.url }}">View cropped image</a></p>
+{% endif %}
+
+<div id="crop">
+	<img src="{{ image_to_crop.url }}">
+</div>
+{% endif %}
+{{ block.super }}
+{% endblock %}
