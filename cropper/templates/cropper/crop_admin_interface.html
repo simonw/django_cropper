@@ -40,7 +40,7 @@ jQuery(window).load(function() {
 		var selected = $('#id_size :selected').text();
 		var bits = selected.split('x');
 		var width = parseInt(bits[0], 10);
-		var height = parseInt(bits[1], 10);
+		var height = parseInt(bits[1].split(' ')[0], 10);
 		api.setOptions({
 			onSelect: update,
 			onChange: update,

@@ -50,18 +50,17 @@ class CropSize(models.Model):
     
     def __unicode__(self):
         if self.name:
-            return u'%s: %sx%s' % (self.name, self.width, self.height)
+            return u'%sx%s - %s' % (self.width, self.height, self.name)
         else:
             return u'%sx%s' % (self.width, self.height)
 
 class CroppedImage(models.Model):
     source = models.ForeignKey(SourceImage)
-    size = models.ForeignKey(CropSize, blank = True, null = True)
+    size = models.ForeignKey(CropSize)
     x = models.PositiveSmallIntegerField(null = True, blank = True)
     y = models.PositiveSmallIntegerField(null = True, blank = True)
     w = models.PositiveSmallIntegerField(null = True, blank = True)
     h = models.PositiveSmallIntegerField(null = True, blank = True)
-    needs_generating = models.BooleanField(default = True)
     image = models.ImageField(
         upload_to='crops/%Y/%m', blank = True, max_length=255
     )
@@ -75,8 +74,6 @@ class CroppedImage(models.Model):
                 # left, upper, right, lower
                 (self.x, self.y, (self.x + self.w), (self.y + self.h))
             )
-            
-            cropped.save('/tmp/tmp-cropped.jpg')
             
             tmp = Image.new('RGB', cropped.size)
             tmp.paste(cropped, (0, 0))
@@ -98,7 +95,4 @@ class CroppedImage(models.Model):
         super(CroppedImage, self).save(*args, **kwargs)
     
     def __unicode__(self):
-        if self.image:
-            return self.image.path
-        else:
-            return u'Crop of %s' % self.source.image.path
+        return u'%s cropped to %s' % (self.source, self.size)
