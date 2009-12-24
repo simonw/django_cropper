@@ -12,8 +12,8 @@ jQuery(window).load(function() {
 	var real_width = {{ original.source.image.width }};
 	var real_height = {{ original.source.image.height }};
 	
-	var resized_width = $('img').width();
-	var resized_height = $('img').height();
+	var resized_width = $('#crop img').width();
+	var resized_height = $('#crop img').height();
 	
 	var width_ratio = real_width / resized_width;
 	var height_ratio = real_height / resized_height;
@@ -51,6 +51,7 @@ jQuery(window).load(function() {
 {% if original %}
 {% if original.image %}
 <h3>Current cropped image</h3>
+<p>{{ original.image.url }}</p>
 <p><img src="{{ original.image.url }}"></p>
 {% endif %}
 <h3>Drag to select a new crop</h3>

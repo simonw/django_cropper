@@ -1,5 +1,5 @@
 from django.db import models
-from django.core.files.base import ContentFile
+from django.core.files.base import ContentFile, File
 from StringIO import StringIO
 import Image, uuid
 
@@ -18,7 +18,6 @@ class SourceImage(models.Model):
         if self.image:
             original = Image.open(self.image)
             if original.size[0] > 800:
-                print(800, int(original.size[1] * (800.0 / original.size[0])))
                 preview = original.resize(
                     (800, int(original.size[1] * (800.0 / original.size[0])))
                 )
@@ -69,20 +68,31 @@ class CroppedImage(models.Model):
     
     def save(self, *args, **kwargs):
         # Crop the image, provided x/y/w/h are available
-        if self.x and self.y and self.w and self.h:
+        if self.x is not None and self.y is not None \
+                and self.w is not None and self.h is not None:
             original = Image.open(self.source.image)
             cropped = original.crop(
                 # left, upper, right, lower
                 (self.x, self.y, (self.x + self.w), (self.y + self.h))
             )
+            
+            cropped.save('/tmp/tmp-cropped.jpg')
+            
+            tmp = Image.new('RGB', cropped.size)
+            tmp.paste(cropped, (0, 0))
+            cropped = tmp
+            
             if self.size:
+                size_xy = (self.size.width, self.size.height)
                 cropped = cropped.resize(
-                    (self.size.width, self.size.height), Image.ANTIALIAS
+                    size_xy, Image.ANTIALIAS
                 )
             contents = StringIO()
             cropped.save(contents, format='jpeg', quality=90)
+            contents.seek(0)
+            filename = '%s.jpg' % str(uuid.uuid4())
             self.image.save(
-                '%s-%s-%s-%sx%s.jpg' % (self.pk,self.x,self.y,self.w,self.h),
+                filename,
                 ContentFile(contents.getvalue()), save=False
             )
         super(CroppedImage, self).save(*args, **kwargs)
