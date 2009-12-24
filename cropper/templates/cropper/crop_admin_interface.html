@@ -33,7 +33,21 @@ jQuery(window).load(function() {
 	args.aspectRatio = {{ original.size.width }} / {{ original.size.height }};
 	{% endif %}
 	
-	$('#crop img').Jcrop(args);
+	var api = $.Jcrop($('#crop img'), args);
+	
+	// Reconfigure if user changes the aspect ratio
+	$('#id_size').change(function() {
+		var selected = $('#id_size :selected').text();
+		var bits = selected.split('x');
+		var width = parseInt(bits[0], 10);
+		var height = parseInt(bits[1], 10);
+		api.setOptions({
+			onSelect: update,
+			onChange: update,
+			aspectRatio: width / height
+		});
+		api.setSelect([0, 0, width, height]);
+	});
 });
 
 </script>
