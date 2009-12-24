@@ -12,7 +12,9 @@ class SourceImage(models.Model):
     preview = models.ImageField(
         upload_to='preview/%Y/%m', blank = True, max_length=255, editable=0
     )
-    url = models.URLField(verify_exists = False, blank = True)
+    url = models.URLField(verify_exists = False, blank = True, help_text="""
+    This doesn't do anything yet...
+    """.strip())
     
     def save(self, *args, **kwargs):
         if self.image:
