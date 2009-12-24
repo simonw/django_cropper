@@ -9,8 +9,8 @@
 <script type="text/javascript">
 
 jQuery(window).load(function() {
-	var real_width = {{ image_to_crop.width }};
-	var real_height = {{ image_to_crop.height }};
+	var real_width = {{ original.source.image.width }};
+	var real_height = {{ original.source.image.height }};
 	
 	var resized_width = $('img').width();
 	var resized_height = $('img').height();
@@ -38,23 +38,24 @@ jQuery(window).load(function() {
 
 </script>
 <style type="text/css">
-#crop img {
-	width: 80%;
-}
+/* #crop img {
+	width: 800px;
+} */
 </style>
 <link rel="stylesheet" 
 	href="/static/cropper-assets/jquery.Jcrop.css" type="text/css">
 {% endblock %}
 
 {% block content %}
-{% if image_to_crop %}
 
+{% if original %}
 {% if original.image %}
-<p><a href="{{ original.image.url }}">View cropped image</a></p>
+<h3>Current cropped image</h3>
+<p><img src="{{ original.image.url }}"></p>
 {% endif %}
-
+<h3>Drag to select a new crop</h3>
 <div id="crop">
-	<img src="{{ image_to_crop.url }}">
+	<img src="{{ original.source.preview.url }}">
 </div>
 {% endif %}
 {{ block.super }}
