@@ -10,7 +10,7 @@ setup(
     package_data = {
         'cropper': ['templates/cropper/*.html']
     },
-    version = '0.1.4a',
+    version = '0.1.5a',
     description = 'Image cropping for the Django admin',
     author = 'Simon Willison',
     author_email = 'simon@simonwillison.net',
