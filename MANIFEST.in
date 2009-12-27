@@ -1,0 +1,9 @@
+README.txt
+setup.py
+cropper/__init__.py
+cropper/admin.py
+cropper/models.py
+cropper/tests.py
+cropper/views.py
+cropper/templates/cropper/crop_admin_interface.html
+
